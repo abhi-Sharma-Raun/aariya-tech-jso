@@ -26,7 +26,7 @@ app.include_router(create_user.router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins = ["*"], #allowed for all so as to test all apis  
-    allow_credentials = True,
+    allow_credentials = False,
     allow_methods = ["*"],
     allow_headers = ["*"]
 )
