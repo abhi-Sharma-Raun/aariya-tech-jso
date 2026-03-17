@@ -44,8 +44,8 @@ class Reports(Base):
     session_id = Column(UUID(as_uuid=False), ForeignKey("session.id"), nullable=False)
     analysis_report = Column(JSONB, nullable=False)
     scoring_report = Column(JSONB, nullable=False)
-    governance_report = Column(JSONB, nullable=False)
-    final_report = Column(JSONB, nullable=False)
+    governance_report = Column(String, nullable=False)
+    final_report = Column(String, nullable=False)
     __table_args__=(
         UniqueConstraint("session_id", name="unique_session_report"),
     )

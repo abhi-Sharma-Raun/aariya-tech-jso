@@ -44,18 +44,22 @@ async def upload_interview_session(
         candidate_id=candidate_id,
         status="pending"
     )
+    '''
     interview_audio_row = models.SessionAudio(
         id = session_id,
         audio = audio_contents
     )
+    '''
     try:
         db.add(new_interview_session)
+        '''
         await db.flush()
         db.add(interview_audio_row)
+        '''
         await db.commit()
     except Exception as e:
         await db.rollback()
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=schemas.INTERNAL_SERVER_ERROR.model_dump())
-    bg_tasks.add_task(prepare_reports, session_id=session_id)
+    bg_tasks.add_task(prepare_reports, session_id=session_id, audio_contents=audio_contents)
 
     return {"msg": "Interview Recording Upload is Successful"}

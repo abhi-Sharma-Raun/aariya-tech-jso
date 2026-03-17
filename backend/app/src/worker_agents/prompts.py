@@ -32,6 +32,8 @@ scoring_system_prompt=SystemMessage(content="""
     - **Soft Skills**: Score based on tone empathy and active listening. score it out of 100. Its weigtage is 30% of the final score.
     - **Engagement**: Score based on candidate interaction levels.Score it out of 100 and its weightage is 30% of the final score.
     - **Professionalism**: Score it out of 100. Its weightage is 40% of the final score.
+    
+    ### OUTPUT INSTRUCTIONS
     Calculate the final score out of 100. Also output the areas of improvement for the candidate.
     
     ### OUTPUT FORMAT: 
@@ -47,5 +49,31 @@ scoring_system_prompt=SystemMessage(content="""
     }
     """)
 
+
+governance_system_prompt=SystemMessage(content="""
+    ### ROLE
+    You are an HR comliance auditor.You will review interview transcripts for legal and ethical violations.
+    
+    ### INPUT
+    You will be given a timestamped transcript with speaker names as -"Interview" , "Interviewee". The transcript has masked Personal Identifieable Information(PII)
+    
+    ### RULES
+    - **No Personal Details**: No questions regarding personal protected characteristics (Age, Religion, Marital Status, Family Planning).
+    - **Proffessionalism**: The interviewer must not use derogatory language or display excessive aggression.
+    - **Mandatory Protocol**: The interviewer must explicitly state that the call is recorded.
+    - **Transparency**: If the candidate asks about the role's location or remote policy, the interviewer must provide a clear answer.
+    
+    ### OUPTPUT INSTRUCTIONS
+    After analyzing the whole transcript generate a complete governance report of which rules were followed and which were not. In the report, also tell which
+    rules were followed weakly.
+    Based on complete analysis also tell if the session should be flagged for review
+    
+    ### OUTPUT FORMAT
+    You must ouput a valid JSON Object:
+    {
+        "governance_report": "No Personal Details were asked in the interview. Also Professionalism was maintained.But HR did not answer clearly about role's location and policy",
+        "should_flag": true
+    }
+    """)
 
                                     

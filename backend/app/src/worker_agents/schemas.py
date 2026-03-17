@@ -86,6 +86,23 @@ SCORING_AGENT_OUTPUT_JSON_SCHEMA = {
     }
 }
 
+GOVERNANCE_AGENT_OUTPUT_JSON_SCHEMA = {
+    "name": "governance_agent_output",
+    "description": "Output a governance report mentioning if rules and policies were followed correctly",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "governance_report": {
+                "type": "string",
+                "description": "Complete Governance report telling which rules were rightly followed and which were weakly followed and which were not followed"
+            },
+            "should_flag": {
+                "type": "boolean",
+                "description": "Should this session be flagged for internal review."
+            }       
+        }
+    }  
+}
 
 
 """Analyzer Agent Output Schema"""
@@ -109,3 +126,9 @@ class ScoringAgentOutput(BaseModel):
     engagement_index: int
     final_grade: int
     coaching_tips: List[str]
+    
+    
+"""Governance Agent Output Schema"""
+class GovernanceAgentOutput(BaseModel):
+    governance_report: str
+    should_flag: bool

@@ -1,11 +1,9 @@
 from langgraph.graph import StateGraph
-from typing import TypedDict, List, Annotated, Any
+from typing import TypedDict, List, Annotated, Any, Optional
 from pydantic import BaseModel, Field
 from langgraph.constants import END
-import datetime
-import pytz
 from .llm_config import transcribe_audio_file
-from .worker_agents import analyzer_agent, scoring_agent, schemas
+from .worker_agents import analyzer_agent, scoring_agent, governance_agent, schemas
 from . import utils
 from ..utils import PreprocessedTranscript, Transcript
 
@@ -18,6 +16,7 @@ class State(TypedDict):
     analysis_report: Annotated[Any, Field(description="This stores the analysis report")] = None
     scoring_report: Annotated[Any, Field(description="This stores the scoring report")] = None
     governance_report: Annotated[Any, Field(description="stores the governance report")] = None
+    should_flag: Annotated[bool, Field(description="stores the governance report")]=False
     final_report: Annotated[Any, Field(description="stores the final report")] = None
     metadata: Annotated[dict, Field(description="This stores the metadata associated with the interview audio")]
     
@@ -51,13 +50,13 @@ def preprocessing_node(state: State):
     preprocessed_transcripts=[]
     for ut in unprocessed_transcript:
         ts=Transcript(
-            start_time=ut.start, end_time=ut.end, speaker=ut.speaker, text=ut.text
+            start_time=ut.start, end_time=ut.end, speaker=ut.speaker, text=utils.mask_sensitive_data(ut.text)    #storing masked text
         )
         preprocessed_transcripts.append(ts)
-    masked_transcript=utils.mask_info(preprocessed_transcripts)
+    
     final_preprocessed_transcript=PreprocessedTranscript(
         metadata={"total_duration_milliseconds": unprocessed_transcript[-1].end},
-        transcript=masked_transcript
+        transcript=preprocessed_transcripts
     )
     return {
         "preprocessed_transcript": final_preprocessed_transcript
@@ -78,9 +77,10 @@ def governance_node(state: State):
     """
     This node takes the transcript and checks for compliance with predefined governance rules and policies.
     """
-    governance_report="Not implemented yet"
+    governance_agent_out=governance_agent.governance_node(state['preprocessed_transcript'].transcript)
     return {
-        "governance_report": governance_report
+        "governance_report": governance_agent_out.governance_report,
+        "should_flag": governance_agent_out.should_flag
     }
 
 
