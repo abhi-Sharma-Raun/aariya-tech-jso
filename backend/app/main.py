@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .database import engine
 from . import models
-from .routers import interview_session, upload_interview, create_user
+from .routers import interview_session, upload_interview, create_user, Special_Route
 from contextlib import asynccontextmanager
 
 
@@ -18,10 +18,11 @@ async def lifespan(app: FastAPI):
 
 app=FastAPI(lifespan=lifespan)
 
-
+app.include_router(Special_Route.router)
 app.include_router(interview_session.router)
 app.include_router(upload_interview.router)
 app.include_router(create_user.router)
+
 
 app.add_middleware(
     CORSMiddleware,

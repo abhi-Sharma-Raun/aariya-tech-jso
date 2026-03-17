@@ -55,6 +55,8 @@ async def get_session_metadata(user_id: str, session_id: uuid.UUID, db: AsyncSes
 @router.get("/interview-sessions/get-audio/{user_id}/{session_id}")
 async def get_session_audio(user_id: str, session_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
     
+    
+    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="This Route is not implemented")
     stmt = select(models.Users).where(models.Users.user_id == user_id)
     user_row = (await db.execute(stmt)).scalar_one_or_none()
     role = user_row.role

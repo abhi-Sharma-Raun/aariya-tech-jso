@@ -18,7 +18,7 @@ class State(TypedDict):
     governance_report: Annotated[Any, Field(description="stores the governance report")] = None
     should_flag: Annotated[bool, Field(description="stores the governance report")]=False
     final_report: Annotated[Any, Field(description="stores the final report")] = None
-    metadata: Annotated[dict, Field(description="This stores the metadata associated with the interview audio")]
+    metadata: Annotated[Optional[dict], Field(description="This stores the metadata associated with the interview audio")]
     
 
 def ingestion_node(state: State):

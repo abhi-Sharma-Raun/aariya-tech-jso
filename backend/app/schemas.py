@@ -2,6 +2,8 @@ from pydantic import BaseModel
 from typing import Literal, Optional
 from datetime import datetime
 import uuid
+from . import utils
+from .src.worker_agents import schemas
 
 
 SESSION_INFO_ALLOWED_ROLES=["ADMIN", "HR_Consultant"]
@@ -34,6 +36,15 @@ class CreateUser(BaseModel):
 
 class CreateUserResponse(BaseModel):
     user_id: str  
+    
+class SpecialRouteResponse(BaseModel):
+    transcript: utils.PreprocessedTranscript
+    analysis_report: schemas.AnalyzerOutput
+    scoring_report: schemas.ScoringAgentOutput
+    governance_report: str
+    should_flag: bool
+    final_report: str
+    
     
 class ErrorDetail(BaseModel):
     detail: Literal["INTERVAL_SERVER_ERROR", "ROLE_BASED_ACCESS_DENIED", "SESSION_NOT_FOUND", "INVALID_AUDIO_TYPE", "INVALID_USER_ROLE"]
